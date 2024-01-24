@@ -1,5 +1,3 @@
-// const { response } = require("express");
-
 const Form = document.getElementById('registrationForm');
 
 Form.addEventListener('submit', async function (e) {
@@ -13,17 +11,17 @@ Form.addEventListener('submit', async function (e) {
     });
 
     try {
-        let res = await fetch('http://localhost:5003/register', {
+        let res = await fetch('https://bharatintern-registraionform.onrender.com/register', {
             method: 'POST',
             headers: {
                 'Content-Type': "application/json",
             },
             body: JSON.stringify(userData)
-        }).then( r => r.json()).then(r => console.log(r));
+        }).then(r => r.json()).then(r => console.log(r));
 
-        if(res.ok) {
+        if (res.ok) {
             alert("Registration successfull.")
-        }else{
+        } else {
             console.log("Error occured.")
         }
     } catch (error) {
