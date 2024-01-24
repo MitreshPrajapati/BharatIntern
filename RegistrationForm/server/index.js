@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { Connection } = require('./db');
-const { UserModel } = require('./user.model');
+const { UserModel } = require('./User.model');
 const cors = require('cors');
 
 
@@ -13,9 +13,7 @@ app.use(bodyParser.json());
 
 
 
-// app.get('/', (req, res) => {
-//     res.sendFile(__dirname + '../client/index.js');
-// })
+
 app.get('/', (req, res) => {
     res.send(" server connected")
 })
@@ -24,16 +22,15 @@ app.get('/', (req, res) => {
 
 app.post('/register', async (req, res) => {
     const userData = req.body;
-    const {emailId} = req.body;
+    const { emailId } = req.body;
 
-// console.log(userData);
     try {
         const isPresent = await UserModel.findOne({ emailId });
-        // console.log(isPresent)
+
         if (isPresent) {
             res.send({ message: "User already exists." });
         } else {
-            const newUser = new UserModel({...userData});
+            const newUser = new UserModel({ ...userData });
             await newUser.save();
             res.send({ message: "User registerd successfully." })
         }
@@ -42,8 +39,6 @@ app.post('/register', async (req, res) => {
         res.send({ message: error.message })
     }
 })
-
-
 
 
 const PORT = process.env.PORT || 7081;
