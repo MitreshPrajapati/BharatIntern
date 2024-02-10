@@ -64,8 +64,8 @@ const displayExpenses = (expenses) => {
             expenseAmount.textContent = "Expenses Amount: ";
             const amountSpan = document.createElement("span");
 
-            expense.amount > 0 ? amountSpan.textContent = "$" + expense.amount + " Creadit" 
-            : amountSpan.textContent = "$" + expense.amount + " Debit";
+            // expense.amount < 0 ? amountSpan.textContent = "$" + expense.amount + " Creadit" 
+            amountSpan.textContent = "$" + expense.amount;
             expenseAmount.append(amountSpan);
             expense.amount > 0 ?
                 amountSpan.classList.add("expense-amount-creadit")
