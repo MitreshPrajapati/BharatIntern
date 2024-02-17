@@ -47,31 +47,78 @@ window.onload = () => {
 }
 
 const displayExpenses = (expenses) => {
+
     const displaySection = document.querySelector("#expense-container");
+    const totalExpense = document.querySelector("#total-expense-span");
+    let totalAmount = 0;
 
     if (!expenses) {
         const empty = document.createElement('h2');
         empty.textContent = "Empty expense list.";
         displaySection.appendChild(empty);
-    } else {
+    }
+    else {
         expenses.forEach((expense) => {
+
             const expenseCard = document.createElement("div");
             expenseCard.classList.add("card");
-            const expenseTitle = document.createElement("h4");
-            expenseTitle.textContent = "Your Expenses";
-            expenseTitle.classList.add("expense-title");
-            const expenseAmount = document.createElement("p");
-            expenseAmount.textContent = "Expenses Amount: ";
-            const amountSpan = document.createElement("span");
 
-            // expense.amount < 0 ? amountSpan.textContent = "$" + expense.amount + " Creadit" 
+            const expenseTitle = document.createElement("h4");
+            const amountSpan = document.createElement("span");
+            const flagRemove_container = document.createElement("div");
+            const removeBtn = document.createElement("button");
+            const expenseTypeFlag = document.createElement("div");
+
+
+            expenseTitle.classList.add("card-title");
+            amountSpan.classList.add("card-amount");
+            expense.expenseType === "credit" ?
+                amountSpan.classList.add("card-amount-credit")
+                : amountSpan.classList.add("card-amount-debit");
+            flagRemove_container.classList.add("card-flag-remove-container");
+            expenseTypeFlag.classList.add(`card-flag-${expense?.expenseType}`);
+            removeBtn.classList.add("btn", "remove-btn");
+
+
+
+
+            expenseTitle.textContent = expense?.title;
+
             amountSpan.textContent = "$" + expense.amount;
-            expenseAmount.append(amountSpan);
-            expense.amount > 0 ?
-                amountSpan.classList.add("expense-amount-creadit")
-                : amountSpan.classList.add("expense-amount-debit");
-            expenseCard.append(expenseTitle, expenseAmount);
-            displaySection.appendChild(expenseCard);
+
+            totalAmount = expense.expenseType === "credit"
+                ? totalAmount + expense.amount
+                : totalAmount - expense.amount;
+
+            removeBtn.innerHTML = '<i class="fa-solid fa-delete-left"></i>';
+            removeBtn.addEventListener("click", () => {
+                deleteExpense(expense?._id);
+            })
+
+            flagRemove_container.append(removeBtn, expenseTypeFlag);
+            expenseCard.append(expenseTitle, amountSpan, flagRemove_container);
+            displaySection.append(expenseCard);
         })
+        totalAmount >= 0
+            ? totalExpense.classList.add("totalExpense-green")
+            : totalExpense.classList.add("totalExpense-red");
+        totalExpense.textContent = totalAmount;
     }
+}
+
+const deleteExpense = async (id) => {
+    const expenses = await fetch(`http://localhost:7979/remove`, {
+        method: "DELETE",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ id: id })
+    })
+        .then((res) => res.json())
+        .then((data) => {
+            alert(`${data.message}`)
+            window.location.href = "./index.html";
+        })
+        .catch((err) => console.log(err));
 }
